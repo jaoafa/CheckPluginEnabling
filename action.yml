@@ -30,7 +30,7 @@ runs:
 
     - name: Download CheckPluginEnabling
       working-directory: PaperServerTest
-      run: wget -o plugins/CheckPluginEnabling.jar `curl --silent "https://api.github.com/repos/jaoafa/CheckPluginEnabling/releases/latest" | jq -r '.assets[0].browser_download_url'`
+      run: wget -O plugins/CheckPluginEnabling.jar `curl --silent "https://api.github.com/repos/jaoafa/CheckPluginEnabling/releases/latest" | jq -r '.assets[0].browser_download_url'`
       shell: bash
 
     - name: Copy jar
