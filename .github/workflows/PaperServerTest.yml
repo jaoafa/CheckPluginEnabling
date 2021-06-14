@@ -48,7 +48,7 @@ jobs:
 
       - name: Copy jar
         working-directory: PaperServerTest
-        run: cp ../target/CheckPluginEnabling-1.0.jar plugins/CheckPluginEnabling.jar
+        run: cp ../target/CheckPluginEnabling-*.jar plugins/CheckPluginEnabling.jar
 
       - name: Start Paper Server
         working-directory: PaperServerTest
