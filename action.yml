@@ -1,0 +1,61 @@
+name: PaperServerTest
+description: Test if the plug-in works on Paper's server for more than a minute without error
+inputs:
+  plugin-name:
+    description: Plugin name to check if it is Enable
+    required: true
+runs:
+  using: composite
+
+  steps:
+    - name: Create PaperServerTest directory & Chdir
+      run: |
+        mkdir PaperServerTest
+        cd PaperServerTest
+        mkdir plugins
+      shell: bash
+
+    - name: Download latest paper server
+      working-directory: PaperServerTest
+      run: curl -o paper.jar -L "https://papermc.io/api/v1/paper/1.16.5/latest/download"
+      shell: bash
+
+    - name: Agree to EULA
+      working-directory: PaperServerTest
+      run: echo eula=true> eula.txt
+      shell: bash
+
+    - name: Download CheckPluginEnabling
+      working-directory: PaperServerTest
+      run: wget -o plugins/CheckPluginEnabling.jar `curl --silent "https://api.github.com/repos/jaoafa/CheckPluginEnabling/releases/latest" | jq -r '.assets[0].browser_download_url'`
+      shell: bash
+
+    - name: Copy jar
+      working-directory: PaperServerTest
+      run: cp ../target/`ls -S ../target | head -n 1` plugins/CheckPluginEnabling.jar
+      shell: bash
+
+    - name: Start Paper Server
+      working-directory: PaperServerTest
+      run: java -jar paper.jar
+      shell: bash
+
+    - name: Check exists plugins.json
+      working-directory: PaperServerTest
+      run: (test -f plugins.json && echo plugins.json exists) || exit 1
+      shell: bash
+
+    - name: Check enabled plugin from plugins.json
+      working-directory: PaperServerTest
+      run: cat plugins.json | jq --arg PLUGIN_NAME $CHECK_PLUGIN_NAME --exit-status 'index([$PLUGIN_NAME]) != null'
+      shell: bash
+
+    - name: Check exists exceptions.json
+      working-directory: PaperServerTest
+      run: (test -f exceptions.json && echo exceptions.json exists) || exit 1
+      shell: bash
+
+    - name: Check enabled plugin from plugins.json
+      working-directory: PaperServerTest
+      run: cat exceptions.json | jq --exit-status '. | length == 0'
+      shell: bash
