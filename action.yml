@@ -35,7 +35,7 @@ runs:
 
     - name: Copy jar
       working-directory: PaperServerTest
-      run: cp ../target/`ls -S ../target | head -n 1` plugins/CheckPluginEnabling.jar
+      run: cp ../target/`ls -S ../target | head -n 1` plugins/$CHECK_PLUGIN_NAME.jar
       shell: bash
 
     - name: Start Paper Server
