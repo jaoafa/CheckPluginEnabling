@@ -25,6 +25,7 @@ runs:
       working-directory: PaperServerTest
       run: |
         curl -o paper.jar -L "https://api.tomacheese.com/papermc/${{ inputs.minecraft-version }}/latest"
+        cat paper.jar
         file paper.jar
       shell: bash
 
