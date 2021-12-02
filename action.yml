@@ -23,7 +23,9 @@ runs:
 
     - name: Download latest paper server
       working-directory: PaperServerTest
-      run: curl -o paper.jar -L "https://api.tomacheese.com/papermc/${{ inputs.minecraft-version }}/latest"
+      run: |
+        curl -o paper.jar -L "https://api.tomacheese.com/papermc/${{ inputs.minecraft-version }}/latest"
+        file paper.jar
       shell: bash
 
     - name: Agree to EULA
@@ -33,7 +35,9 @@ runs:
 
     - name: Download CheckPluginEnabling
       working-directory: PaperServerTest
-      run: wget -O plugins/CheckPluginEnabling.jar `curl --silent "https://api.github.com/repos/jaoafa/CheckPluginEnabling/releases/latest" | jq -r '.assets[0].browser_download_url'`
+      run: |
+        wget -O plugins/CheckPluginEnabling.jar `curl --silent "https://api.github.com/repos/jaoafa/CheckPluginEnabling/releases/latest" | jq -r '.assets[0].browser_download_url'`
+        file plugins/CheckPluginEnabling.jar
       shell: bash
 
     - name: Copy jar
