@@ -28,7 +28,7 @@ public final class Main extends JavaPlugin implements Listener {
     }
 
     @EventHandler
-    public void onLoaded(ServerLoadEvent event) throws IOException {
+    public void onLoaded(ServerLoadEvent event) {
         getLogger().info("After 1 minute, get the list of plugins and exit. Please wait!");
         new BukkitRunnable() {
             @Override

@@ -23,7 +23,7 @@ runs:
 
     - name: Download latest paper server
       working-directory: PaperServerTest
-      run: curl -o paper.jar -L "https://api.tomacheese.com/papermc/$MINECRAFT_VERSION/latest"
+      run: curl -o paper.jar -L "https://api.tomacheese.com/papermc/${{ inputs.minecraft-version }}/latest"
       shell: bash
 
     - name: Agree to EULA
@@ -38,7 +38,7 @@ runs:
 
     - name: Copy jar
       working-directory: PaperServerTest
-      run: cp ../target/`ls -S ../target | head -n 1` plugins/$CHECK_PLUGIN_NAME.jar
+      run: cp ../target/`ls -S ../target | head -n 1` plugins/${{ inputs.plugin-name }}.jar
       shell: bash
 
     - name: Start Paper Server
@@ -53,7 +53,7 @@ runs:
 
     - name: Check enabled plugin from plugins.json
       working-directory: PaperServerTest
-      run: cat plugins.json | jq --arg PLUGIN_NAME $CHECK_PLUGIN_NAME --exit-status 'index([$PLUGIN_NAME]) != null'
+      run: cat plugins.json | jq --arg PLUGIN_NAME ${{ inputs.plugin-name }} --exit-status 'index([$PLUGIN_NAME]) != null'
       shell: bash
 
     - name: Check exists exceptions.json
