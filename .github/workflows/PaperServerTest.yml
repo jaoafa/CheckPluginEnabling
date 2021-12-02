@@ -24,7 +24,7 @@ jobs:
       - name: Set up JDK 11
         uses: actions/setup-java@v1
         with:
-          java-version: 11
+          java-version: 17
 
       - name: Cache local Maven repository
         uses: actions/cache@v2
@@ -45,7 +45,9 @@ jobs:
 
       - name: Download latest paper server
         working-directory: PaperServerTest
-        run: curl -o paper.jar -L https://api.tomacheese.com/papermc/${{ matrix.mcversion }}/latest
+        run: |
+          curl -o paper.jar -L https://api.tomacheese.com/papermc/${{ matrix.mcversion }}/latest
+          file paper.jar
 
       - name: Agree to EULA
         working-directory: PaperServerTest
