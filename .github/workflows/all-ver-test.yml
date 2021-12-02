@@ -1,0 +1,20 @@
+name: Main Test
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Get versions
+        run: |
+          VERSIONS=[`curl "https://papermc.io/api/v2/projects/paper" | jq -r '.versions|@csv' | sed 's/"//g' | sed 's/,/, /g'`]
+          echo "VERSIONS=${VERSIONS}"
+          sed -ri "s/mcversion: .+/mcversion: $VERSION/g" .github/workflows/main.yml
+          sed -ri "s/mcversion: .+/mcversion: $VERSION/g" .github/workflows/PaperServerTest.yml
+          sed -ri "s/minecraft-version: .+/minecraft-version: $VERSION/g" README.md

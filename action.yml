@@ -7,6 +7,9 @@ inputs:
   plugin-name:
     description: Plugin name to check if it is Enable
     required: true
+  minecraft-version:
+    description: Minecraft version
+    required: true
 runs:
   using: composite
 
@@ -20,7 +23,7 @@ runs:
 
     - name: Download latest paper server
       working-directory: PaperServerTest
-      run: curl -o paper.jar -L "https://papermc.io/api/v1/paper/1.16.5/latest/download"
+      run: curl -o paper.jar -L "https://api.tomacheese.com/papermc/$MINECRAFT_VERSION/latest"
       shell: bash
 
     - name: Agree to EULA

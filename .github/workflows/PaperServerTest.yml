@@ -1,6 +1,12 @@
 name: PaperServerTest
 
-on: [ push, pull_request ]
+on:
+  push:
+    paths:
+      - 'src/**'
+  pull_request:
+    paths:
+      - 'src/**'
 
 env:
   CHECK_PLUGIN_NAME: CheckPluginEnabling
@@ -8,6 +14,9 @@ env:
 jobs:
   buildAndTest:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        mcversion: [ 1.8.8, 1.9.4, 1.10.2, 1.11.2, 1.12, 1.12.1, 1.12.2, 1.13-pre7, 1.13, 1.13.1, 1.13.2, 1.14, 1.14.1, 1.14.2, 1.14.3, 1.14.4, 1.15, 1.15.1, 1.15.2, 1.16.1, 1.16.2, 1.16.3, 1.16.4, 1.16.5, 1.17, 1.17.1, 1.18 ]
 
     steps:
       - uses: actions/checkout@v1
@@ -36,15 +45,11 @@ jobs:
 
       - name: Download latest paper server
         working-directory: PaperServerTest
-        run: curl -o paper.jar -L "https://papermc.io/api/v1/paper/1.16.5/latest/download"
+        run: curl -o paper.jar -L https://api.tomacheese.com/papermc/${{ matrix.mcversion }}/latest
 
       - name: Agree to EULA
         working-directory: PaperServerTest
         run: echo eula=true> eula.txt
-
-      #- name: Download CheckPluginEnabling
-      #  working-directory: PaperServerTest
-      #  run: wget -o plugins/CheckPluginEnabling.jar `curl --silent "https://api.github.com/repos/jaoafa/CheckPluginEnabling/releases/latest" | jq -r '.assets[0].browser_download_url'`
 
       - name: Copy jar
         working-directory: PaperServerTest
