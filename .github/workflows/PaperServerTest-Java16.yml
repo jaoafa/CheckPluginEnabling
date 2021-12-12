@@ -49,6 +49,7 @@ jobs:
         run: |
           curl -o paper.jar -L https://api.tomacheese.com/papermc/${{ matrix.mcversion }}/latest
           file paper.jar
+          file paper.jar | grep "HTML document" && cat paper.jar
 
       - name: Agree to EULA
         working-directory: PaperServerTest
