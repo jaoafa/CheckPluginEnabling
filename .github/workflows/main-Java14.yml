@@ -1,4 +1,4 @@
-name: Main Test-Java16
+name: Main Test-Java14
 
 on: [ push, pull_request ]
 
@@ -7,8 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        mcversion: [ 1.17, 1.17.1 ]
-        javaversion: [ 16 ]
+        mcversion: [ 1.16.1, 1.16.2, 1.16.3, 1.16.4, 1.16.5 ]
+        javaversion: [ 14 ]
 
     steps:
       - uses: actions/checkout@v1
