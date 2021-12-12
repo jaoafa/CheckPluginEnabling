@@ -48,8 +48,7 @@ runs:
 
     - name: Start Paper Server
       working-directory: PaperServerTest
-      timeout-minutes: 10
-      run: java -jar paper.jar
+      run: timeout 600 java -jar paper.jar
       shell: bash
 
     - name: Check exists plugins.json
