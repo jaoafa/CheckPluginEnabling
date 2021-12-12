@@ -26,7 +26,7 @@ runs:
       run: |
         curl -o paper.jar -L "https://api.tomacheese.com/papermc/${{ inputs.minecraft-version }}/latest"
         file paper.jar
-        file paper.jar | grep "HTML document" && cat paper.jar
+        file paper.jar | grep "HTML document" && cat paper.jar || true
       shell: bash
 
     - name: Agree to EULA
