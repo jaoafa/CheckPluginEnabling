@@ -9,8 +9,7 @@ inputs:
     required: true
   minecraft-version:
     description: Minecraft version
-    required: false
-    default: "1.18"
+    required: true
 runs:
   using: composite
 
