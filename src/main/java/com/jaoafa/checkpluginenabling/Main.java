@@ -12,9 +12,11 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,12 +43,12 @@ public final class Main extends JavaPlugin implements Listener {
                     .map(Plugin::getName)
                     .forEach(array::add);
                 try {
-                    Files.writeString(Path.of("plugins.json"), array.toJSONString());
+                    Files.write(FileSystems.getDefault().getPath("plugins.json"), Collections.singleton(array.toJSONString()));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 try {
-                    Files.writeString(Path.of("exceptions.json"), exceptions.toJSONString());
+                    Files.write(FileSystems.getDefault().getPath("exceptions.json"), Collections.singleton(exceptions.toJSONString()));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
