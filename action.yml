@@ -48,6 +48,7 @@ runs:
 
     - name: Start Paper Server
       working-directory: PaperServerTest
+      timeout-minutes: 10
       run: java -jar paper.jar
       shell: bash
 
@@ -58,7 +59,9 @@ runs:
 
     - name: Check enabled plugin from plugins.json
       working-directory: PaperServerTest
-      run: cat plugins.json | jq --arg PLUGIN_NAME ${{ inputs.plugin-name }} --exit-status 'index([$PLUGIN_NAME]) != null'
+      run: |
+        cat plugins.json
+        cat plugins.json | jq --arg PLUGIN_NAME ${{ inputs.plugin-name }} --exit-status 'index([$PLUGIN_NAME]) != null'
       shell: bash
 
     - name: Check exists exceptions.json
@@ -66,7 +69,9 @@ runs:
       run: (test -f exceptions.json && echo exceptions.json exists) || exit 1
       shell: bash
 
-    - name: Check enabled plugin from plugins.json
+    - name: Check exceptions from exceptions.json
       working-directory: PaperServerTest
-      run: cat exceptions.json | jq --exit-status '. | length == 0'
+      run: |
+        cat exceptions.json
+        cat exceptions.json | jq --exit-status '. | length == 0'
       shell: bash
