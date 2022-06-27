@@ -1,4 +1,4 @@
-name: Main Test-Java16
+name: Main Test-Java17
 
 on: [ push, pull_request ]
 
