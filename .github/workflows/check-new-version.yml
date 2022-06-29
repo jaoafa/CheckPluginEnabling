@@ -1,0 +1,64 @@
+name: Check new PaperMC version
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 * * * *"
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Get versions from PaperMC Download API
+        run: |
+          curl -s https://api.papermc.io/v2/projects/paper | jq -r '.versions' > ../net-versions.json
+          cat ../net-versions.json
+
+      - name: Get need support versions
+        run: |
+          cat ../net-versions.json | jq --argjson versions "$(cat paper-versions.json)" '. - $versions.supported - $versions.unsupported' > ./need-versions.json
+          cat ./need-versions.json
+
+      - name: Filter created issues
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+
+            const titleTemplate = "feat: Support PaperMC {{VERSION}}"
+
+            const versions = JSON.parse(fs.readFileSync('./need-versions.json', 'utf8'));
+
+            const issues = await github.paginate(github.rest.issues.listForRepo, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 100
+            })
+
+            const needs = versions.filter(version => {
+              const versionTitle = titleTemplate.replace("{{VERSION}}", version)
+              return !issues.some(issue => issue.title === versionTitle)
+            })
+            fs.writeFileSync('./need-issues.json', JSON.stringify(needs))
+
+      - name: Create issues
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+
+            const versions = JSON.parse(fs.readFileSync('./need-issues.json', 'utf8'));
+            const titleTemplate = "feat: Support PaperMC {{VERSION}}"
+
+            for (const version of versions) {
+              const versionTitle = titleTemplate.replace("{{VERSION}}", version)
+              github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                versionTitle,
+              });
+            }
