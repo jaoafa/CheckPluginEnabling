@@ -60,5 +60,6 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 title: versionTitle,
+                assignees: ["book000"],
               });
             }
