@@ -39,5 +39,5 @@ jobs:
         uses: jaoafa/CheckPluginEnabling@v2.4.0
         with:
           plugin-name: CheckPluginEnabling
-          minecraft-version: [ 1.13.1, 1.14, 1.15, 1.16.1, 1.17, 1.18, 1.19, 1.20 ]
+          minecraft-version: [ "1.13.1", "1.14", "1.15", "1.16.1", "1.17", "1.18", "1.19", "1.20" ]
 ```
