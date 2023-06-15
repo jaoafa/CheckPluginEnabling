@@ -20,7 +20,7 @@ jobs:
 
       - name: Get need support versions
         run: |
-          cat ../net-versions.json | jq --argjson versions "$(cat paper-versions.json)" '. - $versions.supported - $versions.unsupported' > ./need-versions.json
+          cat ../net-versions.json | jq --argjson versions "$(cat paper-versions.json)" '. - [$versions.supported[].paper] - $versions.unsupported' > ./need-versions.json
           cat ./need-versions.json
 
       - name: Filter created issues
