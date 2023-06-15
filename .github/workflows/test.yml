@@ -14,14 +14,15 @@ jobs:
   create-matrix:
     name: Create matrix
     runs-on: ubuntu-latest
+
     outputs:
-      versions: ${{ steps.result.outputs.result }}
+      major-versions: ${{ steps.result.outputs.result }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Create matrix
+      - name: Create major versions matrix
         uses: actions/github-script@v6
         id: result
         with:
@@ -34,15 +35,13 @@ jobs:
             const versions = [];
             for (const version of supported) {
                 const name = version.paper.split('.').slice(0, 2).join('.');
-                let entry = versions.find(v => v.name === name);
-                if (!entry) {
-                    entry = { name, versions: [] };
-                    versions.push(entry);
-                }
-                entry.versions.push(version);
+                versions.push(name)
             }
 
             return JSON.stringify(versions);
+        
+      - name: View matrix
+        run: echo ${{ steps.result.outputs.result }}
 
   for-major:
     name: Test for ${{ matrix.version.name }}
@@ -52,18 +51,43 @@ jobs:
       - create-matrix
 
     strategy:
-      matrix:
-        version: ${{ fromJson(needs.create-matrix.outputs.versions) }}
       fail-fast: false
+      matrix:
+        major-version: ${{ fromJson(needs.create-matrix.outputs.major-versions) }}
 
     outputs:
-      versions: ${{ toJson(matrix.version.versions) }}
+      patch-versions: ${{ steps.result.outputs.result }}
 
     steps:
-      - name: Get patch versions
-        id: patch-versions
-        run: |
-          echo "versions=${{ toJson(matrix.version.versions) }}" >> $GITHUB_OUTPUT
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Create patch versions matrix
+        uses: actions/github-script@v6
+        id: result
+        with:
+          script: |
+            const fs = require('fs');
+
+            const majorVersion = process.env.MAJOR_VERSION
+
+            const data = JSON.parse(fs.readFileSync('paper-versions.json', 'utf8'));
+            const supported = data.supported;
+
+            const versions = [];
+            for (const version of supported) {
+                if (!version.startsWith(majorVersion)) {
+                    continue;
+                }
+                versions.push(version);
+            }
+
+            return JSON.stringify(versions);
+        env:
+          MAJOR_VERSION: ${{ matrix.major-version }}
+        
+      - name: View matrix
+        run: echo ${{ steps.result.outputs.result }}
 
   test:
     name: Test for ${{ matrix.version.paper }} with Java ${{ matrix.version.java }}
@@ -74,9 +98,9 @@ jobs:
       - for-major
 
     strategy:
-      matrix:
-        version: ${{ fromJson(needs.for-major.outputs.versions) }}
       fail-fast: false
+      matrix:
+        version: ${{ fromJson(needs.for-major.outputs.patch-versions) }}
 
     steps:
       - name: Checkout
