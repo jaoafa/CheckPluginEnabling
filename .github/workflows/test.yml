@@ -35,16 +35,19 @@ jobs:
             const versions = [];
             for (const version of supported) {
                 const name = version.paper.split('.').slice(0, 2).join('.');
+                if(versions.includes(name)) {
+                    continue;
+                }
                 versions.push(name)
             }
 
-            return JSON.stringify(versions);
-        
+            return versions;
+
       - name: View matrix
         run: echo ${{ steps.result.outputs.result }}
 
   for-major:
-    name: Test for ${{ matrix.version.name }}
+    name: Test for ${{ matrix.major-version.name }}
     runs-on: ubuntu-latest
 
     needs:
@@ -82,10 +85,10 @@ jobs:
                 versions.push(version);
             }
 
-            return JSON.stringify(versions);
+            return versions;
         env:
           MAJOR_VERSION: ${{ matrix.major-version }}
-        
+
       - name: View matrix
         run: echo ${{ steps.result.outputs.result }}
 
