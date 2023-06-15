@@ -3,6 +3,7 @@ description: Test if the plug-in works on Paper's server for more than a minute 
 branding:
   icon: arrow-down-right
   color: yellow
+
 inputs:
   plugin-name:
     description: Plugin name to check if it is Enable
@@ -10,6 +11,7 @@ inputs:
   minecraft-version:
     description: Minecraft version
     required: true
+
 runs:
   using: composite
 
@@ -24,9 +26,18 @@ runs:
     - name: Download latest paper server
       working-directory: PaperServerTest
       run: |
-        curl -o paper.jar -L "https://api.tomacheese.com/papermc/${{ inputs.minecraft-version }}/latest"
+        MINECRAFT_VERSION=${{ inputs.minecraft-version }}
+        BUILD_ID=$(curl --silent "https://papermc.io/api/v2/projects/paper/versions/${MINECRAFT_VERSION}" | \
+          jq -r '.builds[-1]')
+        APP_NAME=$(curl --silent "https://papermc.io/api/v2/projects/paper/versions/${MINECRAFT_VERSION}/builds/${BUILD_ID}" | \
+          jq -r '.downloads.application.name')
+        DOWNLOAD_URL="https://papermc.io/api/v2/projects/paper/versions/${MINECRAFT_VERSION}/builds/${BUILD_ID}/downloads/${APP_NAME}"
+
+        wget -O paper.jar "$DOWNLOAD_URL" --progress=dot:giga
         file paper.jar
+
         file paper.jar | grep "HTML document" && cat paper.jar || true
+        file paper.jar | grep "JSON data" && cat paper.jar || true
       shell: bash
 
     - name: Agree to EULA
@@ -37,7 +48,10 @@ runs:
     - name: Download CheckPluginEnabling
       working-directory: PaperServerTest
       run: |
-        wget -O plugins/CheckPluginEnabling.jar `curl --silent "https://api.github.com/repos/jaoafa/CheckPluginEnabling/releases/latest" | jq -r '.assets[0].browser_download_url'`
+        DOWNLOAD_URL=$(curl --silent "https://api.github.com/repos/jaoafa/CheckPluginEnabling/releases/latest" | \
+          jq -r '.assets[0].browser_download_url')
+
+        wget -O plugins/CheckPluginEnabling.jar "$DOWNLOAD_URL" --progress=dot:giga
         file plugins/CheckPluginEnabling.jar
       shell: bash
 

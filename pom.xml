@@ -6,7 +6,7 @@
 
     <groupId>com.jaoafa</groupId>
     <artifactId>CheckPluginEnabling</artifactId>
-    <version>2.7.0</version>
+    <version>0.0.0</version>
     <packaging>jar</packaging>
 
     <name>CheckPluginEnabling</name>
