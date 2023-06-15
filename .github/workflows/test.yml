@@ -18,6 +18,9 @@ jobs:
       versions: ${{ steps.result.outputs.result }}
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
       - name: Create matrix
         uses: actions/github-script@v6
         id: result
@@ -76,13 +79,14 @@ jobs:
       fail-fast: false
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
       - name: Set up JDK ${{ matrix.version.java }}
         uses: actions/setup-java@v3
         with:
           java-version: ${{ matrix.version.java }}
-          distribution: 'adopt'
+          distribution: "adopt"
 
       - name: Cache local Maven repository
         uses: actions/cache@v3
