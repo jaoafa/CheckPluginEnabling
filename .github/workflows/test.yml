@@ -35,7 +35,7 @@ jobs:
             return data.supported;
 
       - name: View matrix
-        run: echo ${{ steps.result.outputs.result }}
+        run: echo "${{ toJson(steps.result.outputs.result) }}"
 
   test:
     name: Test for ${{ matrix.version.paper }} with Java ${{ matrix.version.java }}
@@ -75,3 +75,14 @@ jobs:
         with:
           plugin-name: CheckPluginEnabling
           minecraft-version: ${{ matrix.version.paper }}
+
+  finish:
+    name: Finished test
+    runs-on: ubuntu-latest
+
+    needs:
+      - test
+
+    steps:
+      - name: Finish
+        run: echo "Finished"
