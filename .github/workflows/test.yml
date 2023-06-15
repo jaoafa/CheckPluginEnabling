@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      major-versions: ${{ steps.result.outputs.result }}
+      versions: ${{ steps.result.outputs.result }}
 
     steps:
       - name: Checkout
@@ -32,62 +32,7 @@ jobs:
             const data = JSON.parse(fs.readFileSync('paper-versions.json', 'utf8'));
             const supported = data.supported;
 
-            const versions = [];
-            for (const version of supported) {
-                const name = version.paper.split('.').slice(0, 2).join('.');
-                if(versions.includes(name)) {
-                    continue;
-                }
-                versions.push(name)
-            }
-
-            return versions;
-
-      - name: View matrix
-        run: echo ${{ steps.result.outputs.result }}
-
-  for-major:
-    name: Test for ${{ matrix.major-version }}
-    runs-on: ubuntu-latest
-
-    needs:
-      - create-matrix
-
-    strategy:
-      fail-fast: false
-      matrix:
-        major-version: ${{ fromJson(needs.create-matrix.outputs.major-versions) }}
-
-    outputs:
-      patch-versions: ${{ steps.result.outputs.result }}
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Create patch versions matrix
-        uses: actions/github-script@v6
-        id: result
-        with:
-          script: |
-            const fs = require('fs');
-
-            const majorVersion = process.env.MAJOR_VERSION
-
-            const data = JSON.parse(fs.readFileSync('paper-versions.json', 'utf8'));
-            const supported = data.supported;
-
-            const versions = [];
-            for (const version of supported) {
-                if (!version.paper.startsWith(majorVersion)) {
-                    continue;
-                }
-                versions.push(version);
-            }
-
-            return versions;
-        env:
-          MAJOR_VERSION: ${{ matrix.major-version }}
+            return data.supported;
 
       - name: View matrix
         run: echo ${{ steps.result.outputs.result }}
@@ -97,12 +42,12 @@ jobs:
     runs-on: ubuntu-latest
 
     needs:
-      - for-major
+      - create-matrix
 
     strategy:
       fail-fast: false
       matrix:
-        version: ${{ fromJson(needs.for-major.outputs.patch-versions) }}
+        version: ${{ fromJson(needs.create-matrix.outputs.versions) }}
 
     steps:
       - name: Checkout
