@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PaperMC versions schema",
+  "type": "object",
+  "properties": {
+    "supported": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "java": {
+            "type": "string",
+            "pattern": "^[0-9]+$"
+          },
+          "paper": {
+            "type": "string",
+            "pattern": "^[0-9]+\\.[0-9]+(\\.[0-9]+)?(-[0-9]+)?$"
+          }
+        },
+        "required": [
+          "java",
+          "paper"
+        ]
+      }
+    },
+    "unsupported": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[0-9]+\\.[0-9]+(\\.[0-9]+)?(-[a-z0-9]+)?$"
+      }
+    }
+  },
+  "required": [
+    "supported",
+    "unsupported"
+  ]
+}

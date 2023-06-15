@@ -33,7 +33,7 @@ runs:
           jq -r '.downloads.application.name')
         DOWNLOAD_URL="https://papermc.io/api/v2/projects/paper/versions/${MINECRAFT_VERSION}/builds/${BUILD_ID}/downloads/${APP_NAME}"
 
-        wget -O paper.jar "$DOWNLOAD_URL"
+        wget -O paper.jar "$DOWNLOAD_URL" --progress=dot:giga
         file paper.jar
 
         file paper.jar | grep "HTML document" && cat paper.jar || true
@@ -50,7 +50,8 @@ runs:
       run: |
         DOWNLOAD_URL=$(curl --silent "https://api.github.com/repos/jaoafa/CheckPluginEnabling/releases/latest" | \
           jq -r '.assets[0].browser_download_url')
-        wget -O plugins/CheckPluginEnabling.jar "$DOWNLOAD_URL"
+
+        wget -O plugins/CheckPluginEnabling.jar "$DOWNLOAD_URL" --progress=dot:giga
         file plugins/CheckPluginEnabling.jar
       shell: bash
 
