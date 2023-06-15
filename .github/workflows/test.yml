@@ -35,7 +35,7 @@ jobs:
             return data.supported;
 
       - name: View matrix
-        run: echo "${{ toJson(steps.result.outputs.result) }}"
+        run: echo "${{ steps.result.outputs.result }}"
 
   test:
     name: Test for ${{ matrix.version.paper }} with Java ${{ matrix.version.java }}
