@@ -70,7 +70,7 @@ jobs:
           echo "jar_file=`ls -S target | head -n 1`" >> $GITHUB_OUTPUT
 
       - name: Upload Release Asset
-        uses: shogo82148/actions-upload-release-asset@v1.6.4
+        uses: shogo82148/actions-upload-release-asset@v1.6.5
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: target/${{ steps.get_jar.outputs.jar_file }}
